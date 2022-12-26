@@ -1,0 +1,25 @@
+// write a jsconfig for nextjs
+
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "preserve",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "components/*": ["./components/*"],
+      "pages/*": ["./pages/*"],
+      "public/*": ["./public/*"],
+      "styles/*": ["./styles/*"],
+      "utils/*": ["./utils/*"],
+      "hooks/*": ["./hooks/*"],
+      "app/*": ["./app/*"]
+    }
+  },
+  "exclude": ["node_modules", ".next"]
+}
