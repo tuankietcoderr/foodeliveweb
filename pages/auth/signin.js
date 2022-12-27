@@ -2,14 +2,18 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getProviders, signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export default function SignIn({ providers }) {
   const { data: session, status } = useSession();
   console.log(status);
   if (session) {
+    const router = useRouter();
+    router.push("/");
     return (
       <>
         <h1>You have logged in.</h1>
+        <h1>We are redirecting you to homepage...</h1>
       </>
     );
   }

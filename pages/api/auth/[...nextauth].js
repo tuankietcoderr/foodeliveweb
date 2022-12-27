@@ -11,18 +11,6 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-  secret: process.env.JWT_SECRET,
-  callbacks: {
-    async jwt(token, account) {
-      if (account?.accessToken) {
-        token.accessToken = account.accessToken;
-      }
-      return token;
-    },
-    redirect: async (url, _baseUrl) => {
-      return Promise.resolve("/");
-    },
-  },
   pages: {
     signIn: "/auth/signin",
   },
