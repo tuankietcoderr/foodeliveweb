@@ -111,14 +111,16 @@ const NavigationBar = () => {
             )}
           </ul>
           <div></div>
-          <div className="self-end mb-2 grid place-items-center absolute bottom-0 right-0 left-0">
-            <button
-              className="bg-red-500 rounded px-3 py-1 text-white"
-              onClick={() => signOut()}
-            >
-              Đăng xuất
-            </button>
-          </div>
+          {status === "authenticated" && (
+            <div className="self-end mb-2 grid place-items-center absolute bottom-0 right-0 left-0">
+              <button
+                className="bg-red-500 rounded px-3 py-1 text-white"
+                onClick={() => signOut()}
+              >
+                Đăng xuất
+              </button>
+            </div>
+          )}
         </div>
       </header>
     </>
