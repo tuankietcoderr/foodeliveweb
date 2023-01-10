@@ -1,5 +1,7 @@
 import {
+  faArrowUpRightFromSquare,
   faBars,
+  faBell,
   faCartShopping,
   faChampagneGlasses,
   faGears,
@@ -10,6 +12,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const NavigationBar = () => {
@@ -23,6 +26,8 @@ const NavigationBar = () => {
       setExpander("translate-x-[-100%]");
     }
   };
+
+  const router = useRouter();
   return (
     <>
       <header
@@ -48,7 +53,14 @@ const NavigationBar = () => {
               className="rounded"
             />
             <span>
-              Xin chào, <span className="font-semibold">{user.name}</span>
+              Xin chào,
+              <Link
+                href={"/account"}
+                className="sm:hover:underline sm:hover:text-[#ff7a00]"
+              >
+                <span className="font-semibold">{user.name}</span>{" "}
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} size="xs" />
+              </Link>
             </span>
           </div>
         ) : status === "unauthenticated" ? (
@@ -66,45 +78,41 @@ const NavigationBar = () => {
         )}
         <div className="grid grid-rows-3">
           <ul className="my-8">
-            <li>
+            <li className={`${router.pathname === "/" ? "active" : ""}`}>
               <Link href="/">
                 <div>
                   <FontAwesomeIcon icon={faHomeAlt} /> Trang chủ
                 </div>
               </Link>
             </li>
-            <li>
+            <li
+              className={`${router.pathname === "/restaurant" ? "active" : ""}`}
+            >
               <Link href="/restaurant">
                 <div>
                   <FontAwesomeIcon icon={faChampagneGlasses} /> Nhà hàng
                 </div>
               </Link>
             </li>
-            {status === "authenticated" && (
-              <li>
-                <Link href="/liked">
-                  <div>
-                    <FontAwesomeIcon icon={faHeart} /> Yêu thích
-                  </div>
-                </Link>
-              </li>
-            )}
 
             {status === "authenticated" && (
-              <li>
-                <Link href="/cart">
+              <li className={`${router.pathname === "/cart" ? "active" : ""}`}>
+                <Link href="/cart?type=added">
                   <div>
                     <FontAwesomeIcon icon={faCartShopping} /> Giỏ hàng
                   </div>
                 </Link>
               </li>
             )}
-
             {status === "authenticated" && (
-              <li>
-                <Link href="/setting">
+              <li
+                className={`${
+                  router.pathname === "/notification" ? "active" : ""
+                }`}
+              >
+                <Link href="/notification">
                   <div>
-                    <FontAwesomeIcon icon={faGears} /> Cài đặt
+                    <FontAwesomeIcon icon={faBell} /> Thông báo
                   </div>
                 </Link>
               </li>

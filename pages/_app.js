@@ -3,14 +3,15 @@ import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { NavigationBar } from "components/index";
-import UserWrapper from ".";
 import Link from "next/link";
+import { AddressProvider } from "context/AddressContext";
+import { FoodProvider } from "context/FoodContext";
 
 function MyApp({ Component, pageProps, session }) {
   return (
     <>
       <SessionProvider session={session}>
-        <ToastContainer autoClose={2000} position={"bottom-center"} />
+        <ToastContainer autoClose={1000} position={"bottom-center"} />
         <NavigationBar />
         <div className="md:mx-[10%] sm:mb-[5%] mb-4 mx-[1rem]">
           <div className="grid place-items-center">
@@ -18,7 +19,11 @@ function MyApp({ Component, pageProps, session }) {
               <img src="/logo_foode_live_big.png" alt="logo" className="w-40" />
             </Link>
           </div>
-          <Component {...pageProps} />
+          <FoodProvider>
+            <AddressProvider>
+              <Component {...pageProps} />
+            </AddressProvider>
+          </FoodProvider>
         </div>
       </SessionProvider>
     </>

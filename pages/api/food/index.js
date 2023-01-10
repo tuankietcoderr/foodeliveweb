@@ -5,7 +5,11 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const foods = await prisma.monAn.findMany();
+        const foods = await prisma.monAn.findMany({
+          include: {
+            CuaHang: true,
+          },
+        });
         res.status(200).json({ foods });
       } catch (error) {
         res.status(400).json({ error });

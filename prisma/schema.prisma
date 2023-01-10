@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -19,61 +20,78 @@ model BanAn {
 }
 
 model ChiTietDatBan {
-  MaDatBan    String    @id(map: "PK_ChiTietDatBan") @db.Char(10)
-  MaBanAn     String?   @db.Char(10)
-  NguoiDat    String?   @db.NVarChar(30)
-  SoDienThoai String?   @db.VarChar(12)
-  GhiChu      String?   @db.NVarChar(200)
-  TrangThai   Int?      @db.TinyInt
-  NgayDat     DateTime? @db.DateTime
-  BanAn       BanAn?    @relation(fields: [MaBanAn], references: [MaBanAn], onDelete: NoAction, onUpdate: NoAction, map: "FK_ChiTietDatBan_MaBan")
+  MaDatBan    String     @id(map: "PK_ChiTietDatBan") @db.Char(10)
+  MaBanAn     String?    @db.Char(10)
+  NguoiDat    String?    @db.NVarChar(30)
+  SoDienThoai String?    @db.VarChar(12)
+  GhiChu      String?    @db.NVarChar(200)
+  TrangThai   Int?       @db.TinyInt
+  NgayDat     DateTime?  @db.DateTime
+  email       String?
+  BanAn       BanAn?     @relation(fields: [MaBanAn], references: [MaBanAn], onDelete: NoAction, onUpdate: NoAction, map: "FK_ChiTietDatBan_MaBan")
+  User        User?      @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction, map: "FK_ChiTietDatBan_NguoiDat")
+  ThongBao    ThongBao[]
 }
 
 model ChiTietDonHang {
-  MaDonHang String  @db.VarChar(12)
-  MaMonAn   String  @db.Char(10)
+  MaDonHang String
+  MaMonAn   String     @db.Char(10)
   SoLuong   Int?
-  MonAn     MonAn   @relation(fields: [MaMonAn], references: [MaMonAn], onUpdate: NoAction, map: "FK_MAMONAN_ChiTietDonHang")
-  DonHang   DonHang @relation(fields: [MaDonHang], references: [MaDonHang], onUpdate: NoAction, map: "FK_SoDonHang")
+  TrangThai Int?       @default(0) @db.TinyInt
+  MonAn     MonAn      @relation(fields: [MaMonAn], references: [MaMonAn], onUpdate: NoAction, map: "FK_MAMONAN_ChiTietDonHang")
+  DonHang   DonHang    @relation(fields: [MaDonHang], references: [MaDonHang], onUpdate: NoAction, map: "FK_SoDonHang")
+  ThongBao  ThongBao[]
 
   @@id([MaDonHang, MaMonAn], map: "PK_SoDonHang_MAMONAN")
 }
 
 model ChiTietHoaDon {
-  MaHoaDon String @db.VarChar(12)
-  MaMonAn  String @db.Char(10)
-  SoLuong  Int?
-  MonAn    MonAn  @relation(fields: [MaMonAn], references: [MaMonAn], onUpdate: NoAction, map: "FK_MAMONAN")
-  HoaDon   HoaDon @relation(fields: [MaHoaDon], references: [MaHoaDon], onUpdate: NoAction, map: "FK_SoHoaDon")
+  MaHoaDon  String @db.VarChar(12)
+  MaMonAn   String @db.Char(10)
+  SoLuong   Int?
+  TrangThai Int?   @db.TinyInt
+  MonAn     MonAn  @relation(fields: [MaMonAn], references: [MaMonAn], onUpdate: NoAction, map: "FK_MAMONAN")
+  HoaDon    HoaDon @relation(fields: [MaHoaDon], references: [MaHoaDon], onUpdate: NoAction, map: "FK_SoHoaDon")
 
   @@id([MaHoaDon, MaMonAn], map: "PK_SoHoaDon_MAMONAN")
 }
 
 model CuaHang {
-  MaCuaHang    String        @id(map: "PK_CuaHang") @db.Char(6)
-  MaQuanLy     String        @db.Char(8)
-  MoTa         String?       @db.NVarChar(Max)
-  TenCuaHang   String?       @db.NVarChar(30)
-  NgayThanhLap DateTime?     @db.DateTime
-  ImgUrl       String?       @db.NVarChar(Max)
-  DiaChi       String?       @db.NVarChar(200)
-  BanAn        BanAn[]
-  MonAn        MonAn[]
-  NguoiQuanLy  NguoiQuanLy[]
+  MaCuaHang          String            @id(map: "PK_CuaHang") @db.Char(6)
+  MaQuanLy           String            @db.Char(8)
+  MoTa               String?           @db.NVarChar(Max)
+  TenCuaHang         String?           @db.NVarChar(30)
+  NgayThanhLap       DateTime?         @db.DateTime
+  ImgUrl             String?           @db.NVarChar(Max)
+  DiaChi             String?           @db.NVarChar(200)
+  TenCuaHangKhongDau String?           @db.NVarChar(30)
+  BanAn              BanAn[]
+  Liked              LikedRestaurant[]
+  MonAn              MonAn[]
+  NguoiQuanLy        NguoiQuanLy[]
+}
+
+model ThongBao {
+  MaThongBao     String          @id(map: "PK_MaThongBao") @default(cuid())
+  MaDonHang      String?
+  MaMonAn        String?         @db.Char(10)
+  MaDatBan       String?         @db.Char(10)
+  ChiTietDatBan  ChiTietDatBan?  @relation(fields: [MaDatBan], references: [MaDatBan], onUpdate: NoAction, map: "FK_MaDatBan_ThongBao")
+  ChiTietDonHang ChiTietDonHang? @relation(fields: [MaDonHang, MaMonAn], references: [MaDonHang, MaMonAn], onUpdate: NoAction, map: "FK_SoDonHang_ThongBao")
 }
 
 model DonHang {
-  MaDonHang      String           @id(map: "PK_SoDonHang") @db.VarChar(12)
+  MaDonHang      String           @id(map: "PK_SoDonHang") @default(cuid())
   NgayLapDonHang DateTime?        @db.DateTime
-  userId         String           @map("user_id")
   TriGia         Float?           @db.Money
-  TieuDe         String?          @db.NVarChar(50)
   GhiChu         String?          @db.NVarChar(50)
   MaNV           String?          @db.Char(10)
   DiaChi         String?          @db.NVarChar(200)
+  TrangThai      Int?             @db.TinyInt
+  email          String
   ChiTietDonHang ChiTietDonHang[]
+  User           User             @relation(fields: [email], references: [email], onUpdate: NoAction, map: "FK_EMAIL_DONHANG")
   NhanVien       NhanVien?        @relation(fields: [MaNV], references: [MaNV], onDelete: NoAction, onUpdate: NoAction, map: "FK_MANV_DONHANG")
-  User           User             @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_USER_DONHANG")
 }
 
 model HoaDon {
@@ -88,14 +106,16 @@ model HoaDon {
 }
 
 model MonAn {
-  MaMonAn        String           @id(map: "PK_MAMONAN") @db.Char(10)
-  TenMonAn       String?          @db.NVarChar(60)
-  Gia            Float?           @db.Money
-  ImgUrl         String?          @db.NVarChar(Max)
-  MaCuaHang      String           @db.Char(6)
-  ChiTietDonHang ChiTietDonHang[]
-  ChiTietHoaDon  ChiTietHoaDon[]
-  CuaHang        CuaHang          @relation(fields: [MaCuaHang], references: [MaCuaHang], onUpdate: NoAction, map: "FK_MaMonAn_CuaHang")
+  MaMonAn          String           @id(map: "PK_MAMONAN") @db.Char(10)
+  TenMonAn         String?          @db.NVarChar(60)
+  Gia              Float?           @db.Money
+  ImgUrl           String?          @db.NVarChar(Max)
+  MaCuaHang        String           @db.Char(6)
+  TenMonAnKhongDau String?          @db.NVarChar(60)
+  ChiTietDonHang   ChiTietDonHang[]
+  ChiTietHoaDon    ChiTietHoaDon[]
+  Liked            LikedFood[]
+  CuaHang          CuaHang          @relation(fields: [MaCuaHang], references: [MaCuaHang], onUpdate: NoAction, map: "FK_MaMonAn_CuaHang")
 }
 
 model NguoiQuanLy {
@@ -145,7 +165,7 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_USER_ID_ACCOUNT")
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -156,23 +176,26 @@ model Session {
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_USER_ID_SESSION")
 
   @@map("sessions")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  phoneNumber   String?   @map("phone_number") @db.VarChar(12)
-  fullName      String?   @map("full_name") @db.NVarChar(50)
-  address       String?   @db.NVarChar(200)
-  accounts      Account[]
-  DonHang       DonHang[]
-  sessions      Session[]
+  id              String            @unique @default(cuid())
+  name            String?
+  email           String            @id @unique @map("email")
+  emailVerified   DateTime?         @map("email_verified")
+  image           String?
+  phoneNumber     String?           @map("phone_number") @db.VarChar(12)
+  fullName        String?           @map("full_name") @db.NVarChar(50)
+  address         String?           @db.NVarChar(200)
+  Account         Account[]
+  ChiTietDatBan   ChiTietDatBan[]
+  DonHang         DonHang[]
+  LikedFood       LikedFood[]
+  LikedRestaurant LikedRestaurant[]
+  Session         Session[]
 
   @@map("users")
 }
@@ -184,4 +207,22 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verificationtokens")
+}
+
+model LikedFood {
+  MaMonAn String @map("MaMonAn") @db.Char(10)
+  email   String
+  User    User   @relation(fields: [email], references: [email], onDelete: Cascade)
+  MonAn   MonAn  @relation(fields: [MaMonAn], references: [MaMonAn], onDelete: Cascade)
+
+  @@id([MaMonAn, email])
+}
+
+model LikedRestaurant {
+  MaCuaHang String  @map("MaCuaHang") @db.Char(6)
+  email     String
+  User      User    @relation(fields: [email], references: [email], onDelete: Cascade)
+  CuaHang   CuaHang @relation(fields: [MaCuaHang], references: [MaCuaHang], onDelete: Cascade)
+
+  @@id([MaCuaHang, email])
 }

@@ -3,10 +3,16 @@
 @tailwind utilities;
 
 @layer base {
-  ul > li {
-    @apply sm:hover:bg-[#ff7a00] sm:hover:text-white p-2 rounded w-full font-semibold text-sm;
+  ul:not(.not) > li {
+    @apply sm:hover:bg-[#ff7a00] sm:hover:text-white p-2 rounded w-full font-semibold text-sm my-1;
+  }
+  ul > li.active {
+    @apply bg-[#ff7a00] text-white;
   }
   ul > li > a > div {
     @apply flex gap-4 items-center;
+  }
+  select {
+    @apply border outline-none p-2 rounded;
   }
 }
